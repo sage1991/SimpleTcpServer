@@ -12,7 +12,7 @@ public class SimpleServerApp {
 		
 		initConfig();
 		
-		SimpleTcpServer simpleTcpServer = new SimpleTcpServer();
+		SimpleTcpServer simpleTcpServer = new SimpleTcpServer(serverProperties);
 		simpleTcpServer.listen(Integer.parseInt(serverProperties.getProperty("port", "9191")));
 		
 	}

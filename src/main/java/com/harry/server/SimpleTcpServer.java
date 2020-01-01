@@ -11,10 +11,20 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import com.harry.server.config.ServerProperties;
+
 public class SimpleTcpServer {
 	
 	private ServerSocket serverSocket = null;
-	private ThreadPoolExecutor executor = new ThreadPoolExecutor(100, 100, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+	private ThreadPoolExecutor executor = null;
+	
+	public SimpleTcpServer(ServerProperties serverProperties) {
+		int pool_size = Integer.parseInt(serverProperties.getProperty("THREAD_POOL_DEFAULT_SIZE", "50"));
+		int max_pool_size = Integer.parseInt(serverProperties.getProperty("THREAD_POOL_MAX_SIZE", "50"));
+		int timeout = Integer.parseInt(serverProperties.getProperty("TIME_OUT", "60"));
+		this.executor = new ThreadPoolExecutor(pool_size, max_pool_size, timeout, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+	}
+	
 	
 	public void listen(int port) {
 		
@@ -22,11 +32,9 @@ public class SimpleTcpServer {
 			
 			serverSocket = new ServerSocket(port);
 			
-			System.out.println("server on");
+			System.out.println("server start at " + port + " port");
 			
 			while(true) {
-				
-				System.out.println("ready connection");
 				
 				Socket socket = serverSocket.accept();
 				
